@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { sdk } from "@farcaster/miniapp-sdk";
-import './app.css';
+import './App.css';
 import Header from './components/Header';
 import Game from './components/Game';
 import ConnectWallet from './components/ConnectWallet';
@@ -50,5 +50,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
