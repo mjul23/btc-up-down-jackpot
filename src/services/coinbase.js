@@ -1,25 +1,35 @@
-// Utilise cette version de test tout de suite
+// Version ultra-simple de test
 const coinbaseWallet = {
   isConnected: false,
   address: null,
   
   async connect() {
-    // Simulation de connexion
-    setTimeout(() => {
-      this.isConnected = true;
-      this.address = '0x1234abcd5678efghijklmnopqrstuvwxyz';
-      console.log('Connecté (mode test):', this.address);
-    }, 1000);
+    console.log('Tentative de connexion...');
     
-    return { success: true, address: '0x1234abcd5678efghijklmnopqrstuvwxyz' };
+    try {
+      // Simule une connexion réussie
+      setTimeout(() => {
+        this.isConnected = true;
+        this.address = '0x1234abcd5678efghijklmnopqrstuvwxyz';
+        console.log('Connecté avec succès:', this.address);
+      }, 1000);
+      
+      return { success: true, address: '0x1234abcd5678efghijklmnopqrstuvwxyz' };
+    } catch (error) {
+      console.error('Erreur:', error);
+      return { success: false, error: 'Erreur de connexion' };
+    }
   },
   
   async disconnect() {
     this.isConnected = false;
     this.address = null;
+    console.log('Déconnecté');
   },
   
   async getBalance() {
     return 1.234; // Balance de test
   }
 };
+
+export default coinbaseWallet;
