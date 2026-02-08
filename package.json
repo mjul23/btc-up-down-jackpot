@@ -24,6 +24,7 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.0",
     "buffer": "^6.0.3",
+    "ethers": "^5.7.2",
     "postcss": "^8.4.31",
     "process": "^0.11.10",
     "react": "^18.2.0",
