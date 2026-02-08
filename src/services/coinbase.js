@@ -1,4 +1,6 @@
-// Version avec MetaMask
+import { ethers } from 'ethers';
+
+// Version avec MetaMask / Rabby / tout wallet EIP-1193
 const coinbaseWallet = {
   isConnected: false,
   address: null,
