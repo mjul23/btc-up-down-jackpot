@@ -26,6 +26,7 @@
     "ogTitle": "BTC Up/Down Jackpot",
     "ogDescription": "Pari sur Bitcoin avec jackpot progressif",
     "ogImageUrl": "https://btc-up-down-jackpot.vercel.app/hero.png",
+    "webhookUrl": "https://btc-up-down-jackpot.vercel.app/api/webhook",
     "noindex": false
   }
 }
