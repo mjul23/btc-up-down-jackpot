@@ -2,27 +2,42 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#000000" />
-    <meta 
-      name="description" 
-      content="BTC Up/Down Jackpot - Pari sur le Bitcoin avec jackpot progressif" 
-    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BTC Jackpot" />
     
-    <!-- Meta tags pour Base App -->
-    <meta name="base:app_id" content="6988a81173cda529e5cd6775" />
-    <meta name="baseapp" content="miniapp" />
-    <meta name="baseapp-name" content="BTC Up/Down Jackpot" />
-    <meta name="baseapp-category" content="games" />
-    <meta name="baseapp-description" content="Pari sur Bitcoin avec jackpot progressif" />
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="BTC Up/Down Jackpot" />
+    <meta name="description" content="Pari sur Bitcoin avec jackpot progressif. Prédis la direction du prix et gagne!" />
     
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://btc-up-down-jackpot.vercel.app/" />
+    <meta property="og:title" content="BTC Up/Down Jackpot" />
+    <meta property="og:description" content="Pari sur Bitcoin avec jackpot progressif" />
+    <meta property="og:image" content="https://btc-up-down-jackpot.vercel.app/logo192.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://btc-up-down-jackpot.vercel.app/" />
+    <meta property="twitter:title" content="BTC Up/Down Jackpot" />
+    <meta property="twitter:description" content="Pari sur Bitcoin avec jackpot progressif" />
+    <meta property="twitter:image" content="https://btc-up-down-jackpot.vercel.app/logo192.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- PWA Theme -->
+    <meta name="color-scheme" content="dark light" />
+    
     <title>BTC Up/Down Jackpot</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>Vous devez activer JavaScript pour utiliser cette application.</noscript>
     <div id="root"></div>
   </body>
 </html>
