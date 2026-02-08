@@ -1,23 +1,24 @@
-// Modifie temporairement pour le test
+// Dans src/services/coinbase.js
+import Web3 from 'web3';
+
 const coinbaseWallet = {
   isConnected: false,
   address: null,
-  provider: null,
-  signer: null,
   
   async connect() {
     try {
-      // Version de test - simulation
-      console.log('Mode test activé');
-      
-      // Simule une connexion réussie
-      setTimeout(() => {
+      if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await web3.eth.getAccounts();
+        
         this.isConnected = true;
-        this.address = '0x1234abcd5678efghijklmnopqrstuvwxyz';
-        console.log('Connecté (test):', this.address);
-      }, 1000);
-      
-      return { success: true, address: '0x1234abcd5678efghijklmnopqrstuvwxyz' };
+        this.address = accounts[0];
+        
+        return { success: true, address: accounts[0] };
+      } else {
+        return { success: false, error: 'MetaMask non installé' };
+      }
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -26,11 +27,15 @@ const coinbaseWallet = {
   async disconnect() {
     this.isConnected = false;
     this.address = null;
-    this.provider = null;
-    this.signer = null;
   },
   
   async getBalance() {
-    return 1.234; // Balance de test
+    if (!this.isConnected || !window.ethereum) return 0;
+    try {
+      const web3 = new Web3(window.ethereum);
+      const balance = await web3.eth.getBalance(this.address);
+      return parseFloat(web3.utils.fromWei(balance, 'ether'));
+    } catch (error) {
+      return 0;
+    }
   }
-};
