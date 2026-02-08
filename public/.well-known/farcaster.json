@@ -1,1 +1,30 @@
-
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "BTC Up/Down Jackpot",
+    "homeUrl": "https://btc-up-down-jackpot.vercel.app",
+    "iconUrl": "https://btc-up-down-jackpot.vercel.app/logo192.png",
+    "splashImageUrl": "https://btc-up-down-jackpot.vercel.app/logo192.png",
+    "splashBackgroundColor": "#000000",
+    "subtitle": "Pari sur Bitcoin",
+    "description": "Prédis la direction du prix du Bitcoin et gagne avec le jackpot progressif.",
+    "screenshotUrls": [
+      "https://btc-up-down-jackpot.vercel.app/screenshot1.png",
+      "https://btc-up-down-jackpot.vercel.app/screenshot2.png",
+      "https://btc-up-down-jackpot.vercel.app/screenshot3.png"
+    ],
+    "primaryCategory": "games",
+    "tags": ["bitcoin", "betting", "games", "crypto", "jackpot"],
+    "heroImageUrl": "https://btc-up-down-jackpot.vercel.app/logo192.png",
+    "tagline": "Gagne avec Bitcoin",
+    "ogTitle": "BTC Up/Down Jackpot",
+    "ogDescription": "Pari sur Bitcoin avec jackpot progressif",
+    "ogImageUrl": "https://btc-up-down-jackpot.vercel.app/logo192.png",
+    "noindex": false
+  }
+}
