@@ -1,46 +1,30 @@
 {
   "name": "btc-up-down-jackpot",
   "version": "1.0.0",
-  "description": "BTC Up/Down Jackpot - Base App Mini App",
-  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web3": "^4.0.0",
+    "ethers": "^5.7.2",
+    "@farcaster/miniapp-sdk": "^0.2.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.0",
+    "postcss": "^8.4.24",
+    "autoprefixer": "^10.4.14"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "compile": "hardhat compile",
-    "deploy": "hardhat run scripts/deploy.js",
-    "deploy:sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
-    "deploy:base": "hardhat run scripts/deploy.js --network base",
-    "test:contracts": "hardhat test",
-    "test:coverage": "hardhat test --coverage",
-    "lint": "eslint src --ext .js,.jsx",
-    "lint:fix": "eslint src --ext .js,.jsx --fix"
+    "eject": "react-scripts eject"
   },
-  "dependencies": {
-    "@coinbase/wallet-sdk": "^3.7.1",
-    "@pythnetwork/pyth-sdk-solidity": "^2.1.2",
-    "@supabase/supabase-js": "^2.39.0",
-    "autoprefixer": "^10.4.16",
-    "axios": "^1.6.0",
-    "buffer": "^6.0.3",
-    "ethers": "^5.7.2",
-    "postcss": "^8.4.31",
-    "process": "^0.11.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1",
-    "tailwindcss": "^3.3.0",
-    "web3": "^4.5.0"
-  },
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@openzeppelin/contracts": "^5.0.0",
-    "dotenv": "^16.3.1",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "hardhat": "^2.19.0"
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [
@@ -53,17 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "keywords": [
-    "bitcoin",
-    "betting",
-    "crypto",
-    "base-app",
-    "react",
-    "solidity",
-    "blockchain",
-    "defi"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+  }
 }
