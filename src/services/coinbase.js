@@ -5,56 +5,87 @@ const coinbaseWallet = {
   isConnected: false,
   address: null,
   provider: null,
-  signer: null,
-  
+
   async connect() {
     try {
-      if (window.ethereum) {
-        console.log('MetaMask détecté');
-        
-        // Demande l'autorisation des comptes
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        
-        // Crée le provider et signer
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        
-        this.isConnected = true;
-        this.address = address;
-        this.provider = provider;
-        this.signer = signer;
-        
-        console.log('Connecté avec MetaMask:', address);
-        return { success: true, address };
-      } else {
-        console.log('MetaMask non trouvé');
-        return { success: false, error: 'MetaMask non installé' };
+      if (!window.ethereum) {
+        throw new Error('Wallet non détecté');
       }
+
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+
+      this.address = accounts[0];
+      this.isConnected = true;
+      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      console.log('Connecté avec MetaMask:', this.address);
+      return { success: true, address: this.address };
     } catch (error) {
       console.error('Erreur connexion:', error);
       return { success: false, error: error.message };
     }
   },
-  
+
   async disconnect() {
     this.isConnected = false;
     this.address = null;
     this.provider = null;
-    this.signer = null;
-    console.log('Déconnecté');
+    console.log('Wallet déconnecté');
   },
-  
+
   async getBalance() {
-    if (!this.isConnected || !this.signer) return 0;
     try {
-      const balance = await this.signer.getBalance();
-      return parseFloat(ethers.utils.formatEther(balance));
+      if (!this.provider || !this.address) {
+        return 0;
+      }
+
+      const balance = await this.provider.getBalance(this.address);
+      return ethers.utils.formatEther(balance);
     } catch (error) {
-      console.error('Erreur balance:', error);
+      console.error('Erreur récupération balance:', error);
       return 0;
     }
-  }
+  },
+
+  async sendTransaction(to, amount) {
+    try {
+      if (!this.provider || !this.address) {
+        throw new Error('Wallet non connecté');
+      }
+
+      const signer = this.provider.getSigner();
+      const tx = await signer.sendTransaction({
+        to: to,
+        value: ethers.utils.parseEther(amount.toString()),
+      });
+
+      const receipt = await tx.wait();
+      return { success: true, hash: receipt.transactionHash };
+    } catch (error) {
+      console.error('Erreur transaction:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async switchNetwork(chainId) {
+    try {
+      if (!window.ethereum) {
+        throw new Error('Wallet non détecté');
+      }
+
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainId }],
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error('Erreur changement réseau:', error);
+      return { success: false, error: error.message };
+    }
+  },
 };
 
-export default coinbaseWallet;
+export { coinbaseWallet };
