@@ -89,3 +89,4 @@ const coinbaseWallet = {
 };
 
 export { coinbaseWallet };
+export default coinbaseWallet;
