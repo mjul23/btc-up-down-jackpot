@@ -44,7 +44,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
       return
     }
 
-    if (timeRemaining.expired) {
+    if (timeRemaining && timeRemaining.expired) {
       setError('Le temps pour parier est écoulé')
       return
     }
@@ -63,7 +63,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
       const currentPrice = await pythService.getBtcPrice()
       
       // Créer le pari
-      const { data, error } = await supabase
+      const { data, error: betError } = await supabase
         .from('paris')
         .insert([{
           user_id: user.id,
@@ -75,7 +75,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
         .select()
         .single()
 
-      if (error) throw error
+      if (betError) throw betError
 
       // Mettre à jour le jackpot
       const { data: jackpotData } = await supabase
@@ -95,24 +95,37 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
         }])
 
       // Mettre à jour les stats utilisateur
+      const { data: userData } = await supabase
+        .from('users')
+        .select('total_mise, paris_total')
+        .eq('id', user.id)
+        .single()
+
+      const newTotalMise = (userData?.total_mise || 0) + betAmount
+      const newParis = (userData?.paris_total || 0) + 1
+
       await supabase
         .from('users')
         .update({
-          total_mise: supabase.raw(`total_mise + ${betAmount}`),
-          paris_total: supabase.raw('paris_total + 1')
+          total_mise: newTotalMise,
+          paris_total: newParis
         })
         .eq('id', user.id)
 
       setSuccess(`Pari ${betType === BET_TYPES.UP ? 'UP' : 'DOWN'} placé avec succès !`)
       setSelectedBet(null)
-      refreshData()
+      setBetAmount(0.1)
+      
+      if (refreshData) {
+        refreshData()
+      }
       
       // Notification
       alert(`🎉 Pari ${betType === BET_TYPES.UP ? 'UP' : 'DOWN'} placé !\nMise: ${Utils.formatCurrency(betAmount)}\nJackpot: ${Utils.formatCurrency(newJackpot)}`)
 
     } catch (error) {
       console.error('Erreur pari:', error)
-      setError(`Erreur: ${error.message}`)
+      setError(`Erreur: ${error.message || 'Une erreur est survenue'}`)
     } finally {
       setLoading(false)
     }
@@ -130,6 +143,15 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
     return betType === BET_TYPES.UP ? '📈' : '📉'
   }
 
+  const defaultTimeRemaining = {
+    expired: false,
+    hours: 0,
+    minutes: 0,
+    days: 0
+  }
+
+  const displayTime = timeRemaining || defaultTimeRemaining
+
   return (
     <div className="space-y-8">
       {/* Section de pari principal */}
@@ -139,11 +161,11 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
             🎯 Faites votre pari BTC
           </h2>
           <div className="text-xl text-gray-300 mb-2">
-            Prix actuel: {Utils.formatCurrency(btcPrice)}
+            Prix actuel: {Utils.formatCurrency(btcPrice || 0)}
           </div>
           <div className="text-lg text-gray-400">
-            {timeRemaining.expired ? 'Temps écoulé !' : 
-             `Prochain pari dans ${timeRemaining.hours || 0}h ${timeRemaining.minutes || 0}m`}
+            {displayTime.expired ? 'Temps écoulé !' : 
+             `Prochain pari dans ${displayTime.hours || 0}h ${displayTime.minutes || 0}m`}
           </div>
         </div>
 
@@ -151,32 +173,32 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <button
             onClick={() => handleBet(BET_TYPES.UP)}
-            disabled={loading || timeRemaining.expired}
+            disabled={loading || displayTime.expired}
             className={`p-8 rounded-lg border-2 transition-all ${
               selectedBet === BET_TYPES.UP
                 ? 'border-green-500 bg-green-900/20'
                 : 'border-gray-600 hover:border-green-500 hover:bg-green-900/10'
-            } ${loading || timeRemaining.expired ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+            } ${loading || displayTime.expired ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
           >
             <div className="text-center">
               <div className="text-6xl mb-4">📈</div>
               <div className="text-2xl font-bold text-green-500 mb-2">
-                BTC HAUSS (UP)
+                BTC HAUSSE (UP)
               </div>
               <div className="text-gray-300">
-                Si BTC > prix actuel à 20h UTC
+                Si BTC {'>'} prix actuel à 20h UTC
               </div>
             </div>
           </button>
 
           <button
             onClick={() => handleBet(BET_TYPES.DOWN)}
-            disabled={loading || timeRemaining.expired}
+            disabled={loading || displayTime.expired}
             className={`p-8 rounded-lg border-2 transition-all ${
               selectedBet === BET_TYPES.DOWN
                 ? 'border-red-500 bg-red-900/20'
                 : 'border-gray-600 hover:border-red-500 hover:bg-red-900/10'
-            } ${loading || timeRemaining.expired ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+            } ${loading || displayTime.expired ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
           >
             <div className="text-center">
               <div className="text-6xl mb-4">📉</div>
@@ -184,7 +206,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
                 BTC BAISSE (DOWN)
               </div>
               <div className="text-gray-300">
-                Si BTC < prix actuel à 20h UTC
+                Si BTC {'<'} prix actuel à 20h UTC
               </div>
             </div>
           </button>
@@ -240,7 +262,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
               💎 Jackpot Progressif
             </h4>
             <div className="text-2xl font-bold text-white mb-2">
-              {Utils.formatCurrency(jackpot)}
+              {Utils.formatCurrency(jackpot || 0)}
             </div>
             <div className="text-sm text-gray-300">
               En cas de flat, le jackpot est reporté !
@@ -297,7 +319,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
       )}
 
       {/* Paris bloqués */}
-      {timeRemaining.expired && (
+      {displayTime.expired && (
         <div className="bg-red-900 border border-red-700 rounded-lg p-6 text-center">
           <h3 className="text-2xl font-bold text-white mb-4">
             ⏰ Temps écoulé
@@ -306,7 +328,7 @@ const Pari = ({ btcPrice, jackpot, timeRemaining, refreshData }) => {
             Le prochain pari sera disponible à 20h00 UTC
           </p>
           <div className="text-4xl font-bold text-yellow-400">
-            {timeRemaining.days || 0}j {timeRemaining.hours || 0}h
+            {displayTime.days || 0}j {displayTime.hours || 0}h
           </div>
         </div>
       )}
