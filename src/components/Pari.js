@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../services/supabase'
-import { coinbaseWallet } from '../services/coinbase'
+import coinbaseWallet from '../services/coinbase'
 import { pythService } from '../services/pyth'
 import { Utils, COLORS, MESSAGES, BET_TYPES } from '../utils/constants'
 
